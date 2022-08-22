@@ -19,13 +19,13 @@ func NewLimiter(ctx context.Context, number int) *Limiter {
 		lock <- struct{}{}
 	}
 
-	group, ctx := errgroup.WithContext(ctx)
+	group, ctxx := errgroup.WithContext(ctx)
 
 	return &Limiter{
 		number:   number,
 		lock:     lock,
 		errGroup: group,
-		ctx:      ctx,
+		ctx:      ctxx,
 	}
 }
 
