@@ -13,20 +13,20 @@ type Limiter struct {
 	ctx      context.Context
 }
 
-func NewLimiter(ctx context.Context, number int) *Limiter {
+func NewLimiter(ctx context.Context, number int) (*Limiter, context.Context) {
 	lock := make(chan struct{}, number)
 	for i := 0; i < number; i++ {
 		lock <- struct{}{}
 	}
 
-	group, ctxx := errgroup.WithContext(ctx)
+	group, ctx := errgroup.WithContext(ctx)
 
 	return &Limiter{
 		number:   number,
 		lock:     lock,
 		errGroup: group,
-		ctx:      ctxx,
-	}
+		ctx:      ctx,
+	}, ctx
 }
 
 func (l *Limiter) push() {
